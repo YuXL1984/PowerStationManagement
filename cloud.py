@@ -16,12 +16,21 @@ def hello(**params):
     else:
         return 'Hello, LeanCloud!'
 
-
-
-class StationData(Object):
-    def save_stationData(**params):
+@engine.define
+def demo(**params):
+    if 'stationName' in params and 'stationAddress' in params:
         station_data = StationData()
         station_data.set('stationName',params['stationName'])
         station_data.set('stationAddress',params['stationAddress'])
+
+        StationData().save_stationData(station_data)
+
+
+class StationData(Object):
+
+    def save_stationData(self, station_data):
         station_data.save()
-        return station_data.get(id)
+
+
+#    def update_stationData(self):
+
