@@ -1,10 +1,8 @@
 # coding: utf-8
 
 from leancloud import Engine
-from leancloud import Object
-
 from app import app
-
+from stationdata import StationData
 
 engine = Engine(app)
 
@@ -17,20 +15,63 @@ def hello(**params):
         return 'Hello, LeanCloud!'
 
 @engine.define
-def demo(**params):
+def addData(**params):
     if 'stationName' in params and 'stationAddress' in params:
-        station_data = StationData()
-        station_data.set('stationName',params['stationName'])
-        station_data.set('stationAddress',params['stationAddress'])
+        add_station_data = StationData()
+        add_station_data.set('stationName',params['stationName'])
+        add_station_data.set('stationAddress',params['stationAddress'])
+        station_number = StationData().add_stationData(add_station_data)
+        return station_number
 
-        StationData().save_stationData(station_data)
+@engine.define
+def delData(**params):
+    if 'stationName' in params:
+        del_station_data = StationData()
+        del_station_data.set('stationName',params['stationName'])
+        funRequest = StationData().del_stationData(del_station_data)
+        return funRequest
+
+@engine.define
+def searchForId(**params):
+    objectId = params['objectId']
+    funRequest = StationData().searchFromId(objectId)
+    return funRequest
+
+@engine.define
+def readData():
+    funRequest = StationData().readStationData()
+    return funRequest
 
 
-class StationData(Object):
-
-    def save_stationData(self, station_data):
-        station_data.save()
 
 
-#    def update_stationData(self):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
