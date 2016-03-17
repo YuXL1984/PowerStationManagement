@@ -25,10 +25,8 @@ def addData(**params):
 
 @engine.define
 def delData(**params):
-    if 'stationName' in params:
-        del_station_data = StationData()
-        del_station_data.set('stationName',params['stationName'])
-        funRequest = StationData().del_stationData(del_station_data)
+    if 'objectId' in params:
+        funRequest = StationData().del_stationData(params['objectId'])
         return funRequest
 
 @engine.define
