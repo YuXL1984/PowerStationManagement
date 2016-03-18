@@ -15,6 +15,25 @@ class StationData(Object):
         resultDic = map(lambda x: dict(zip(station_key, x)), stationData_list)
         return resultDic
 
+    def load_sectionStationData(self, page, number):
+        skip = (page - 1) * number
+        StationData = Object.extend('StationData')
+        query = Query(StationData)
+        query.skip(skip)
+        query.limit(number)
+        resultObjests = query.find()
+        #如果结果存在
+        if resultObjests:
+            #将结果保存至resultDic
+            stationData_list = []
+            for object in resultObjests:
+                stationData_list.append((object.id, object.get('stationNumber'), object.get('stationName'), object.get('stationAddress')))
+            station_key = ('objectId', 'stationNumber', 'stationName', 'stationAddress')
+            resultDic = map(lambda x: dict(zip(station_key, x)), stationData_list)
+            return resultDic
+        else:
+            return '101'
+
     def add_stationData(self, stationName,stationAddress):
         funResult = StationData().search_stationDataForName(stationName)
         if funResult is '101':
@@ -25,6 +44,26 @@ class StationData(Object):
             resultDic = {'objectId':add_station_data.id,'stationNumber':add_station_data.get('stationNumber'),'stationName':add_station_data.get('stationName'),'stationAddress':add_station_data.get('stationAddress')}
             return resultDic
         else:
+            return '101'
+
+    def update_stationDataForOid(self,objectId,newStationName,newStationAddress):
+        #根据Oid查询目前值
+        funResult = self.search_stationDataForOid(objectId)
+        resultDic = funResult[0]
+        if funResult != '101':
+            #判断新站点名称是否改变
+            if resultDic['stationName'] != newStationName:
+                #如果改变进行更新
+                queryResult = Query.do_cloud_query('update StationData set stationName = ?  where objectId = ?',newStationName,objectId)
+            #判断新站点地址是否改变
+            if resultDic['stationAddress'] != newStationAddress:
+                #如果改变进行更新
+                queryResult = Query.do_cloud_query('update StationData set stationAddress = ?  where objectId = ?',newStationAddress,objectId)
+            funResult = self.search_stationDataForOid(objectId)
+            #返回更新后的值
+            return funResult
+        else:
+            #找不到Oid
             return '101'
 
     def del_stationDataForOid(self,objectId):
@@ -64,6 +103,7 @@ class StationData(Object):
             return '101'
 
     def search_stationDataForName(self,stationName):
+        StationData = Object.extend('StationData')
         query = Query(StationData)
         #查询条件
         query.equal_to('stationName',stationName)
@@ -81,23 +121,7 @@ class StationData(Object):
         else:
             return '101'
 
-    def update_stationDataForOid(self,objectId,newStationName,newStationAddress):
-        #根据Oid查询目前值
-        funResult = self.search_stationDataForOid(objectId)
-        resultDic = funResult[0]
-        if funResult != '101':
-            #判断新站点名称是否改变
-            if resultDic['stationName'] != newStationName:
-                #如果改变进行更新
-                queryResult = Query.do_cloud_query('update StationData set stationName = ?  where objectId = ?',newStationName,objectId)
-            #判断新站点地址是否改变
-            if resultDic['stationAddress'] != newStationAddress:
-                #如果改变进行更新
-                queryResult = Query.do_cloud_query('update StationData set stationAddress = ?  where objectId = ?',newStationAddress,objectId)
-            funResult = self.search_stationDataForOid(objectId)
-            #返回更新后的值
-            return funResult
-        else:
-            #找不到Oid
-            return '101'
+
+
+
 
