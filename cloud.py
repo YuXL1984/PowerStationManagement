@@ -4,7 +4,7 @@ from leancloud import Engine
 from app import app
 from stationdata import StationData
 from leancloud import User
-
+import json
 engine = Engine(app)
 
 
@@ -21,7 +21,7 @@ def loadStationData():
     print '===========> loadStationData'
     funResult = StationData().load_stationData()
     resultDic = {'code':'1000','data':funResult}
-    return resultDic
+    return json.dumps(resultDic).decode('unicode-escape')
 
 @engine.define
 def loadSectionStationData(**params):
