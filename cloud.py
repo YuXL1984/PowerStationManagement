@@ -20,7 +20,7 @@ def hello(**params):
 def loadStationData():
     print '===========> loadStationData'
     funResult = StationData().load_stationData()
-    resultDic = {'code':'1000','resultStationData':funResult}
+    resultDic = {'code':'1000','data':funResult}
     return resultDic
 
 @engine.define
