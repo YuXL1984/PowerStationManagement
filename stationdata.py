@@ -3,6 +3,7 @@
 from leancloud import Object
 from leancloud import Query
 
+
 class StationData(Object):
 
     def load_stationData(self):
@@ -120,6 +121,7 @@ class StationData(Object):
             return resultDic
         else:
             return '101'
+
 
 
 

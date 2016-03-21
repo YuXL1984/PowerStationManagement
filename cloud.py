@@ -3,6 +3,7 @@
 from leancloud import Engine
 from app import app
 from stationdata import StationData
+from leancloud import User
 
 engine = Engine(app)
 
@@ -114,14 +115,27 @@ def searchStationDataForName(**params):
         resultDic = {'code':'1001','error':'传入参数错误'}
         return resultDic
 
+@engine.define
+def useRegister(**params):
+    if 'userName' in params and 'userPassword' in params and 'userEmail' in params:
+        user = User()
+        user.set("username",params['userName'])
+        user.set("password",params['userPassword'])
+        user.set("email",params['userEmail'])
+        user.sign_up()
+        return '100'
+    else:
+        resultDic = {'code':'1001','error':'传入参数错误'}
+        return resultDic
 
-
-
-
-
-
-
-
+@engine.define
+def useLogin(**params):
+    if 'userName' in params and 'userPassword' in params:
+        User().login(params['userName'], params['userPassword'])
+        return '100'
+    else:
+        resultDic = {'code':'1001','error':'传入参数错误'}
+        return resultDic
 
 
 
