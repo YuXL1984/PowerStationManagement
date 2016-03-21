@@ -13,7 +13,7 @@ def hello(**params):
     if 'name' in params:
         return 'Hello, {}!'.format(params['name'])
     else:
-        return 'Hello, LeanCloud! Ray'
+        return 'Hello, LeanCloud! '
 
 @engine.define
 #读取所有站点数据
@@ -21,7 +21,7 @@ def loadStationData():
     print '===========> loadStationData'
     funResult = StationData().load_stationData()
     resultDic = {'code':'1000','resultData':funResult}
-    return resultDic
+    return funResult
 
 @engine.define
 def loadSectionStationData(**params):
