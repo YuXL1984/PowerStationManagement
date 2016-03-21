@@ -38,7 +38,7 @@ def loadSectionStationData(**params):
             resultDic = {'code':'1002','error':'page和number应该为大于0的整数'}
             return resultDic
     else:
-        resultDic = {'code':'1001','error':'传入参数错误'}
+        resultDic = {'code':'1001','error':{'code':'1001','error':'传入参数错误'}}
         return resultDic
 
 @engine.define
