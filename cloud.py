@@ -13,7 +13,7 @@ def hello(**params):
     if 'name' in params:
         return 'Hello, {}!'.format(params['name'])
     else:
-        return 'Hello, LeanCloud!'
+        return 'Hello, LeanCloud! Ray'
 
 @engine.define
 #读取所有站点数据
