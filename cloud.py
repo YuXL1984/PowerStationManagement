@@ -21,8 +21,7 @@ def loadStationData():
     print '===========> loadStationData'
     funResult = StationData().load_stationData()
     resultDic = {'code':'1000','resultData':funResult}
-    # return json.dumps(resultDic).decode('unicode-escape')
-    return json.dumps(resultDic)
+    return json.dumps(resultDic).decode('unicode-escape')
 
 
 @engine.define
