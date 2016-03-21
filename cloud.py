@@ -21,7 +21,7 @@ def loadStationData():
     print '===========> loadStationData'
     funResult = StationData().load_stationData()
     resultDic = {'code':'1000','resultData':funResult}
-    return funResult
+    return resultDic
 
 @engine.define
 def loadSectionStationData(**params):
