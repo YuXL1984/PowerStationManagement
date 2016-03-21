@@ -20,7 +20,7 @@ def hello(**params):
 def loadStationData():
     print '===========> loadStationData'
     funResult = StationData().load_stationData()
-    resultDic = {'code':'1000','data':funResult}
+    resultDic = {'code':'1000','resultData':funResult}
     return json.dumps(resultDic).decode('unicode-escape')
 
 @engine.define
@@ -33,7 +33,7 @@ def loadSectionStationData(**params):
                 return resultDic
             else:
                 resultDic = {'code':'1000','resultData':funResult}
-                return resultDic
+                return json.dumps(resultDic).decode('unicode-escape')
         else:
             resultDic = {'code':'1002','error':'page和number应该为大于0的整数'}
             return resultDic
@@ -52,7 +52,7 @@ def addStationData(**params):
             return resultDic
         else:
             resultDic = {'code':'1000','resultData':funResult}
-            return resultDic
+            return json.dumps(resultDic).decode('unicode-escape')
     else:
         resultDic = {'code':'1001','error':'传入参数错误'}
         return resultDic
@@ -66,7 +66,7 @@ def updateStationDataForOid(**params):
             return resultDic
         else:
             resultDic = {'code':'1000','resultData':funResult}
-            return resultDic
+            return json.dumps(resultDic).decode('unicode-escape')
     else:
         resultDic = {'code':'1001','error':'传入参数错误'}
         return resultDic
@@ -97,7 +97,7 @@ def searchStationDataForOid(**params):
             return resultDic
         else:
             resultDic = {'code':'1000','resultData':funResult}
-            return resultDic
+            return json.dumps(resultDic).decode('unicode-escape')
     else:
         resultDic = {'code':'1001','error':'传入参数错误'}
         return resultDic
@@ -111,29 +111,7 @@ def searchStationDataForName(**params):
             return resultDic
         else:
             resultDic = {'code':'1000','resultData':funResult}
-            return resultDic
-    else:
-        resultDic = {'code':'1001','error':'传入参数错误'}
-        return resultDic
-
-@engine.define
-def useRegister(**params):
-    if 'userName' in params and 'userPassword' in params and 'userEmail' in params:
-        user = User()
-        user.set("username",params['userName'])
-        user.set("password",params['userPassword'])
-        user.set("email",params['userEmail'])
-        user.sign_up()
-        return '100'
-    else:
-        resultDic = {'code':'1001','error':'传入参数错误'}
-        return resultDic
-
-@engine.define
-def useLogin(**params):
-    if 'userName' in params and 'userPassword' in params:
-        User().login(params['userName'], params['userPassword'])
-        return '100'
+            return json.dumps(resultDic).decode('unicode-escape')
     else:
         resultDic = {'code':'1001','error':'传入参数错误'}
         return resultDic
