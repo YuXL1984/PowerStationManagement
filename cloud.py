@@ -18,6 +18,7 @@ def hello(**params):
 @engine.define
 #读取所有站点数据
 def loadStationData():
+    print '===========> loadStationData'
     funResult = StationData().load_stationData()
     resultDic = {'code':'1000','resultData':funResult}
     return resultDic
