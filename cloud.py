@@ -31,16 +31,16 @@ def loadSectionStationData(**params):
             funResult = StationData().load_sectionStationData(int(params['page']),int(params['number']))
             if funResult is '101':
                 resultDic = {'code':'1002','resultData':'全部数据分页显示完毕'}
-                return resultDic
+                return json.dumps(resultDic).decode('unicode-escape')
             else:
                 resultDic = {'code':'1000','resultData':funResult}
                 return json.dumps(resultDic).decode('unicode-escape')
         else:
             resultDic = {'code':'1002','error':'page和number应该为大于0的整数'}
-            return resultDic
+            return json.dumps(resultDic).decode('unicode-escape')
     else:
         resultDic = {'code':'1001','error':{'code':'1001','error':'传入参数错误'}}
-        return resultDic
+        return json.dumps(resultDic).decode('unicode-escape')
 
 @engine.define
 #添加站点,传入站点名称和地址,添加后返回站点信息
@@ -50,13 +50,13 @@ def addStationData(**params):
         funResult = StationData().add_stationData(params['stationName'],params['stationAddress'])
         if funResult is '101':
             resultDic = {'code':'1002','error':'站点名称已存在'}
-            return resultDic
+            return json.dumps(resultDic).decode('unicode-escape')
         else:
             resultDic = {'code':'1000','resultData':funResult}
             return json.dumps(resultDic).decode('unicode-escape')
     else:
         resultDic = {'code':'1001','error':'传入参数错误'}
-        return resultDic
+        return json.dumps(resultDic).decode('unicode-escape')
 
 @engine.define
 def updateStationDataForOid(**params):
@@ -64,13 +64,13 @@ def updateStationDataForOid(**params):
         funResult = StationData().update_stationDataForOid(params['objectId'],params['newStationName'],params['newStationAddress'])
         if funResult is '101':
             resultDic = {'code':'1002','error':'objectId不正确'}
-            return resultDic
+            return json.dumps(resultDic).decode('unicode-escape')
         else:
             resultDic = {'code':'1000','resultData':funResult}
             return json.dumps(resultDic).decode('unicode-escape')
     else:
         resultDic = {'code':'1001','error':'传入参数错误'}
-        return resultDic
+        return json.dumps(resultDic).decode('unicode-escape')
 
 @engine.define
 def delStationDataForOid(**params):
@@ -78,16 +78,16 @@ def delStationDataForOid(**params):
         funRequest = StationData().del_stationDataForOid(params['objectId'])
         if funRequest is '100':
             resultDic = {'code':'1000','resultData':'删除成功'}
-            return resultDic
+            return json.dumps(resultDic).decode('unicode-escape')
         elif funRequest is '101':
             resultDic = {'code':'1003','resultData':'objectId不存在'}
-            return resultDic
+            return json.dumps(resultDic).decode('unicode-escape')
         else:
             resultDic = {'code':'1002','resultData':'删除失败'}
-            return resultDic
+            return json.dumps(resultDic).decode('unicode-escape')
     else:
         resultDic = {'code':'1001','error':'传入参数错误'}
-        return resultDic
+        return json.dumps(resultDic).decode('unicode-escape')
 
 @engine.define
 def searchStationDataForOid(**params):
@@ -95,13 +95,13 @@ def searchStationDataForOid(**params):
         funResult = StationData().search_stationDataForOid(params['objectId'])
         if funResult is '101':
             resultDic = {'code':'1002','error':'搜索无结果'}
-            return resultDic
+            return json.dumps(resultDic).decode('unicode-escape')
         else:
             resultDic = {'code':'1000','resultData':funResult}
             return json.dumps(resultDic).decode('unicode-escape')
     else:
         resultDic = {'code':'1001','error':'传入参数错误'}
-        return resultDic
+        return json.dumps(resultDic).decode('unicode-escape')
 
 @engine.define
 def searchStationDataForName(**params):
@@ -109,13 +109,13 @@ def searchStationDataForName(**params):
         funResult = StationData().search_stationDataForName(params['stationName'])
         if funResult is '101':
             resultDic = {'code':'1002','error':'搜索无结果'}
-            return resultDic
+            return json.dumps(resultDic).decode('unicode-escape')
         else:
             resultDic = {'code':'1000','resultData':funResult}
             return json.dumps(resultDic).decode('unicode-escape')
     else:
         resultDic = {'code':'1001','error':'传入参数错误'}
-        return resultDic
+        return json.dumps(resultDic).decode('unicode-escape')
 
 
 
