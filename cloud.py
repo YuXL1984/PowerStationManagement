@@ -117,8 +117,19 @@ def searchStationDataForName(**params):
         resultDic = {'code':'1001','error':'传入参数错误'}
         return json.dumps(resultDic).decode('unicode-escape')
 
-
-
+@engine.define
+def searchStationDataForBlurry(**params):
+    if 'stationName' in params:
+        funResult = StationData().search_stationDataForBlurry(params['stationName'])
+        if funResult is '101':
+            resultDic = {'code':'1002','error':'搜索无结果'}
+            return json.dumps(resultDic).decode('unicode-escape')
+        else:
+            resultDic = {'code':'1000','resultData':funResult}
+            return json.dumps(resultDic).decode('unicode-escape')
+    else:
+        resultDic = {'code':'1001','error':'传入参数错误'}
+        return json.dumps(resultDic).decode('unicode-escape')
 
 
 
