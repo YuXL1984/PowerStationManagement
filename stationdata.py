@@ -168,13 +168,9 @@ class StationData(Object):
     def search_stationDataForBlurryFromUserId(self,stationName,userId):
         #使用CQL语句查询
         #queryResult = Query.do_cloud_query('select * from StationData where stationName like "%?%"', stationName)
-        queryResult = Query.do_cloud_query('select * from StationData where stationName like "%'+ stationName +'%"')
+        queryResult = Query.do_cloud_query('select * from StationData where userId = ? and stationName like "%'+ stationName +'%"', userId)
         #接收查询结果
-        searchObjests = queryResult.results
-        resultObjests = []
-        for resultObjestsForUid in searchObjests:
-            if resultObjestsForUid.get('userId') == userId:
-                resultObjests.append(resultObjestsForUid)
+        resultObjests = queryResult.results
         #如果结果存在
         if resultObjests:
             #将结果保存至resultDic
