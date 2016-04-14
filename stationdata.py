@@ -170,9 +170,9 @@ class StationData(Object):
         #queryResult = Query.do_cloud_query('select * from StationData where stationName like "%?%"', stationName)
         queryResult = Query.do_cloud_query('select * from StationData where stationName like "%'+ stationName +'%"')
         #接收查询结果
+        searchObjests = queryResult.results
         resultObjests = []
-        rtObjests = queryResult.results
-        for resultObjestsForUid in rtObjests:
+        for resultObjestsForUid in searchObjests:
             if resultObjestsForUid.get('userId') == userId:
                 resultObjests.append(resultObjestsForUid)
         #如果结果存在
