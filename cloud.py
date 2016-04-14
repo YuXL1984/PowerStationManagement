@@ -24,9 +24,13 @@ def loadStationData():
 
 @engine.define
 def loadStationDataForUserId(**params):
-    funResult = StationData().load_stationDataForUserId(params['userId'])
-    resultDic = {'code':'1000','resultData':funResult}
-    return json.dumps(resultDic).decode('unicode-escape')
+    if 'userId' in params:
+        funResult = StationData().load_stationDataForUserId(params['userId'])
+        resultDic = {'code':'1000','resultData':funResult}
+        return json.dumps(resultDic).decode('unicode-escape')
+    else:
+        resultDic = {'code':'1001','error':{'code':'1001','error':'传入参数错误'}}
+        return json.dumps(resultDic).decode('unicode-escape')
 
 @engine.define
 def loadSectionStationData(**params):
@@ -66,7 +70,7 @@ def addStationData(**params):
 #添加站点,传入站点名称和地址,添加后返回站点信息
 def addStationDataForUserId(**params):
     #判断传入参数中是否包含站点名称和站点地址
-    if 'stationName' in params and 'stationAddress' in params:
+    if 'stationName' in params and 'stationAddress' in params and 'userId' in params:
         funResult = StationData().add_stationDataForUserId(params['stationName'],params['stationAddress'],params['userId'])
         if funResult is '101':
             resultDic = {'code':'1002','error':'站点名称已存在'}
@@ -151,7 +155,19 @@ def searchStationDataForBlurry(**params):
         resultDic = {'code':'1001','error':'传入参数错误'}
         return json.dumps(resultDic).decode('unicode-escape')
 
-
+@engine.define
+def searchStationDataForBlurryFromUserId(**params):
+    if 'stationName' in params and 'userId' in params:
+        funResult = StationData().search_stationDataForBlurryFromUserId(params['stationName'],params['userId'])
+        if funResult is '101':
+            resultDic = {'code':'1002','error':'搜索无结果'}
+            return json.dumps(resultDic).decode('unicode-escape')
+        else:
+            resultDic = {'code':'1000','resultData':funResult}
+            return json.dumps(resultDic).decode('unicode-escape')
+    else:
+        resultDic = {'code':'1001','error':'传入参数错误'}
+        return json.dumps(resultDic).decode('unicode-escape')
 
 
 
