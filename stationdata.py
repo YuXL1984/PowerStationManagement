@@ -6,6 +6,7 @@ from leancloud import Query
 
 class StationData(Object):
 
+    @property
     def load_stationData(self):
         queryResult = Query.do_cloud_query('select * from StationData')
         resultObjests = queryResult.results
@@ -13,6 +14,16 @@ class StationData(Object):
         for object in resultObjests:
             stationData_list.append((object.id, object.get('stationNumber'), object.get('stationName'), object.get('stationAddress')))
         station_key = ('objectId', 'stationNumber', 'stationName', 'stationAddress')
+        resultDic = map(lambda x: dict(zip(station_key, x)), stationData_list)
+        return resultDic
+
+    def load_stationDataForUserId(self,userId):
+        queryResult = Query.do_cloud_query('select * from StationData where userId = ?',userId)
+        resultObjests = queryResult.results
+        stationData_list = []
+        for object in resultObjests:
+            stationData_list.append((object.id, object.get('stationNumber'), object.get('stationName'), object.get('stationAddress'), object.get('userId')))
+        station_key = ('objectId', 'stationNumber', 'stationName', 'stationAddress', 'userId')
         resultDic = map(lambda x: dict(zip(station_key, x)), stationData_list)
         return resultDic
 
@@ -43,6 +54,19 @@ class StationData(Object):
             add_station_data.set('stationAddress',stationAddress)
             add_station_data.save()
             resultDic = {'objectId':add_station_data.id,'stationNumber':add_station_data.get('stationNumber'),'stationName':add_station_data.get('stationName'),'stationAddress':add_station_data.get('stationAddress')}
+            return resultDic
+        else:
+            return '101'
+
+    def add_stationDataForUserId(self, stationName,stationAddress,userId):
+        funResult = StationData().search_stationDataForName(stationName)
+        if funResult is '101':
+            add_station_data = StationData()
+            add_station_data.set('stationName',stationName)
+            add_station_data.set('stationAddress',stationAddress)
+            add_station_data.set('userId',userId)
+            add_station_data.save()
+            resultDic = {'objectId':add_station_data.id,'stationNumber':add_station_data.get('stationNumber'),'stationName':add_station_data.get('stationName'),'stationAddress':add_station_data.get('stationAddress'),'userId':add_station_data.get('userId')}
             return resultDic
         else:
             return '101'

@@ -18,11 +18,15 @@ def hello(**params):
 @engine.define
 #读取所有站点数据
 def loadStationData():
-    print '===========> loadStationData'
-    funResult = StationData().load_stationData()
+    funResult = StationData().load_stationData
     resultDic = {'code':'1000','resultData':funResult}
     return json.dumps(resultDic).decode('unicode-escape')
 
+@engine.define
+def loadStationDataForUserId(**params):
+    funResult = StationData().load_stationDataForUserId(params['userId'])
+    resultDic = {'code':'1000','resultData':funResult}
+    return json.dumps(resultDic).decode('unicode-escape')
 
 @engine.define
 def loadSectionStationData(**params):
@@ -48,6 +52,22 @@ def addStationData(**params):
     #判断传入参数中是否包含站点名称和站点地址
     if 'stationName' in params and 'stationAddress' in params:
         funResult = StationData().add_stationData(params['stationName'],params['stationAddress'])
+        if funResult is '101':
+            resultDic = {'code':'1002','error':'站点名称已存在'}
+            return json.dumps(resultDic).decode('unicode-escape')
+        else:
+            resultDic = {'code':'1000','resultData':funResult}
+            return json.dumps(resultDic).decode('unicode-escape')
+    else:
+        resultDic = {'code':'1001','error':'传入参数错误'}
+        return json.dumps(resultDic).decode('unicode-escape')
+
+@engine.define
+#添加站点,传入站点名称和地址,添加后返回站点信息
+def addStationDataForUserId(**params):
+    #判断传入参数中是否包含站点名称和站点地址
+    if 'stationName' in params and 'stationAddress' in params:
+        funResult = StationData().add_stationDataForUserId(params['stationName'],params['stationAddress'],params['userId'])
         if funResult is '101':
             resultDic = {'code':'1002','error':'站点名称已存在'}
             return json.dumps(resultDic).decode('unicode-escape')
