@@ -2,28 +2,37 @@
 
 from leancloud import Object
 from leancloud import Query
+from leancloud import User
 
 
 class StationData(Object):
 
-    @property
-    def load_stationData(self):
+    def load_stationData(self,stationName,userId):
         queryResult = Query.do_cloud_query('select * from StationData')
+        # 接收查询结果
         resultObjests = queryResult.results
-        stationData_list = []
-        for object in resultObjests:
-            stationData_list.append((object.id, object.get('stationNumber'), object.get('stationName'), object.get('stationAddress'), object.get('userId')))
-        station_key = ('objectId', 'stationNumber', 'stationName', 'stationAddress', 'userId')
-        resultDic = map(lambda x: dict(zip(station_key, x)), stationData_list)
-        return resultDic
+        # 如果结果存在
+        if resultObjests:
+            # 将结果保存至resultDic
+            stationData_list = []
+            for object in resultObjests:
+                stationData_list.append((object.id, object.get('stationNumber'), object.get('stationName'),
+                                         object.get('stationAddress'), object.get('stationCode'),
+                                         object.get('positionData'), object.get('userId')))
+            station_key = (
+            'objectId', 'stationNumber', 'stationName', 'stationAddress', 'stationCode', 'positionData', 'userId')
+            resultDic = map(lambda x: dict(zip(station_key, x)), stationData_list)
+            return resultDic
+        else:
+            return '101'
 
     def load_stationDataForUserId(self,userId):
         queryResult = Query.do_cloud_query('select * from StationData where userId = ?',userId)
         resultObjests = queryResult.results
         stationData_list = []
         for object in resultObjests:
-            stationData_list.append((object.id, object.get('stationNumber'), object.get('stationName'), object.get('stationAddress'), object.get('userId')))
-        station_key = ('objectId', 'stationNumber', 'stationName', 'stationAddress', 'userId')
+            stationData_list.append((object.id, object.get('stationNumber'), object.get('stationName'), object.get('stationAddress'), object.get('stationCode'), object.get('positionData'), object.get('userId')))
+        station_key = ('objectId', 'stationNumber', 'stationName', 'stationAddress','stationCode', 'positionData', 'userId')
         resultDic = map(lambda x: dict(zip(station_key, x)), stationData_list)
         return resultDic
 
@@ -46,32 +55,36 @@ class StationData(Object):
         else:
             return '101'
 
-    def add_stationData(self, stationName,stationAddress):
+    def add_stationData(self, stationName,stationAddress,stationCode,positionData):
         funResult = StationData().search_stationDataForName(stationName)
         if funResult is '101':
             add_station_data = StationData()
             add_station_data.set('stationName',stationName)
             add_station_data.set('stationAddress',stationAddress)
+            add_station_data.set('positionData', stationCode)
+            add_station_data.set('positionData', positionData)
             add_station_data.save()
-            resultDic = {'objectId':add_station_data.id,'stationNumber':add_station_data.get('stationNumber'),'stationName':add_station_data.get('stationName'),'stationAddress':add_station_data.get('stationAddress')}
+            resultDic = {'objectId':add_station_data.id,'stationNumber':add_station_data.get('stationNumber'),'stationName':add_station_data.get('stationName'),'stationAddress':add_station_data.get('stationAddress'),'stationCode':add_station_data.get('stationCode'),'positionData':add_station_data.get('positionData')}
             return resultDic
         else:
             return '101'
 
-    def add_stationDataForUserId(self, stationName,stationAddress,userId):
+    def add_stationDataForUserId(self, stationName,stationAddress,stationCode,positionData,userId):
         funResult = StationData().search_stationDataForName(stationName)
         if funResult is '101':
             add_station_data = StationData()
             add_station_data.set('stationName',stationName)
             add_station_data.set('stationAddress',stationAddress)
+            add_station_data.set('stationCode', stationCode)
+            add_station_data.set('positionData', positionData)
             add_station_data.set('userId',userId)
             add_station_data.save()
-            resultDic = {'objectId':add_station_data.id,'stationNumber':add_station_data.get('stationNumber'),'stationName':add_station_data.get('stationName'),'stationAddress':add_station_data.get('stationAddress'),'userId':add_station_data.get('userId')}
+            resultDic = {'objectId':add_station_data.id,'stationNumber':add_station_data.get('stationNumber'),'stationName':add_station_data.get('stationName'),'stationAddress':add_station_data.get('stationAddress'),'stationCode':add_station_data.get('stationCode'),'positionData':add_station_data.get('positionData'),'userId':add_station_data.get('userId')}
             return resultDic
         else:
             return '101'
 
-    def update_stationDataForOid(self,objectId,newStationName,newStationAddress):
+    def update_stationDataForOid(self,objectId,newStationName,newStationAddress,newStationCode,newPositionData):
         #根据Oid查询目前值
         funResult = self.search_stationDataForOid(objectId)
         resultDic = funResult[0]
@@ -84,6 +97,10 @@ class StationData(Object):
             if resultDic['stationAddress'] != newStationAddress:
                 #如果改变进行更新
                 queryResult = Query.do_cloud_query('update StationData set stationAddress = ?  where objectId = ?',newStationAddress,objectId)
+            #更新站点编码
+            queryResult = Query.do_cloud_query('update StationData set stationCode = ?  where objectId = ?',newStationCode, objectId)
+            #更新地图坐标
+            queryResult = Query.do_cloud_query('update StationData set positionData = ?  where objectId = ?',newPositionData,objectId)
             funResult = self.search_stationDataForOid(objectId)
             #返回更新后的值
             return funResult
@@ -147,7 +164,7 @@ class StationData(Object):
         else:
             return '101'
 
-    def search_stationDataForBlurry(self,stationName):
+    def search_stationDataBlurryForStationName(self,stationName):
         #使用CQL语句查询
         #queryResult = Query.do_cloud_query('select * from StationData where stationName like "%?%"', stationName)
         queryResult = Query.do_cloud_query('select * from StationData where stationName like "%'+ stationName +'%"')
@@ -158,8 +175,26 @@ class StationData(Object):
             #将结果保存至resultDic
             stationData_list = []
             for object in resultObjests:
-                stationData_list.append((object.id, object.get('stationNumber'), object.get('stationName'), object.get('stationAddress'), object.get('userId')))
-            station_key = ('objectId', 'stationNumber', 'stationName', 'stationAddress', 'userId')
+                stationData_list.append((object.id, object.get('stationNumber'), object.get('stationName'), object.get('stationAddress'), object.get('stationCode'),object.get('positionData'), object.get('userId')))
+            station_key = ('objectId', 'stationNumber', 'stationName', 'stationAddress', 'stationCode','positionData','userId')
+            resultDic = map(lambda x: dict(zip(station_key, x)), stationData_list)
+            return resultDic
+        else:
+            return '101'
+
+    def search_stationDataBlurryForStationCode(self,stationCode):
+        #使用CQL语句查询
+        #queryResult = Query.do_cloud_query('select * from StationData where stationCode like "%?%"', stationCode)
+        queryResult = Query.do_cloud_query('select * from StationData where stationCode like "%'+ stationCode +'%"')
+        #接收查询结果
+        resultObjests = queryResult.results
+        #如果结果存在
+        if resultObjests:
+            #将结果保存至resultDic
+            stationData_list = []
+            for object in resultObjests:
+                stationData_list.append((object.id, object.get('stationNumber'), object.get('stationName'), object.get('stationAddress'), object.get('stationCode'),object.get('positionData'), object.get('userId')))
+            station_key = ('objectId', 'stationNumber', 'stationName', 'stationAddress', 'stationCode','positionData','userId')
             resultDic = map(lambda x: dict(zip(station_key, x)), stationData_list)
             return resultDic
         else:
@@ -176,8 +211,8 @@ class StationData(Object):
             #将结果保存至resultDic
             stationData_list = []
             for object in resultObjests:
-                stationData_list.append((object.id, object.get('stationNumber'), object.get('stationName'), object.get('stationAddress'), object.get('userId')))
-            station_key = ('objectId', 'stationNumber', 'stationName', 'stationAddress', 'userId')
+                stationData_list.append((object.id, object.get('stationNumber'), object.get('stationName'), object.get('stationAddress'),object.get('stationCode'), object.get('positionData'), object.get('userId')))
+            station_key = ('objectId', 'stationNumber', 'stationName', 'stationAddress', 'stationCode','positionData', 'userId')
             resultDic = map(lambda x: dict(zip(station_key, x)), stationData_list)
             return resultDic
         else:
